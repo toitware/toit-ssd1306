@@ -4,16 +4,18 @@
 
 // Demo of 128x64 monochrome display.
 
+import bitmap show *
 import font show *
 import font.x11_100dpi.sans.sans_24_bold as sans_24_bold
+import pixel_display.histogram show *
 import pixel_display show *
-import texture show *
-import two_color show *
-import histogram show *
-import bitmap show *
+import pixel_display.texture show *
+import pixel_display.two_color show *
+
+import .get_display
 
 main:
-  oled := TwoColorPixelDisplay "ssd1306"
+  oled := get_display
 
   oled.background = BLACK
 
@@ -32,8 +34,8 @@ animate oled histogram transform:
   loeg_x := 50
 
   sans_context := oled.context --landscape --font=sans --color=WHITE
-  boef := oled.text sans_context boef_x 16 "Bøf"
-  loeg := oled.text sans_context loeg_x 32 "Løg"
+  boef := oled.text sans_context boef_x 16 "Beef"
+  loeg := oled.text sans_context loeg_x 32 "Onion"
 
   sans24b_context := sans_context.with --font=sans24b --alignment=TEXT_TEXTURE_ALIGN_RIGHT
   fps := oled.text sans24b_context 126 62 "30.0"

@@ -2,11 +2,13 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
+import bitmap show *
 import font show *
 import pixel_display show *
-import texture show *
-import two_color show *
-import bitmap show *
+import pixel_display.texture show *
+import pixel_display.two_color show *
+
+import .get_display
 
 TOITWARE_LOGO ::= #[
   0x50, 0x34, 0x0a, 0x23, 0x20, 0x43, 0x52, 0x45, 0x41, 0x54, 0x4f, 0x52, 0x3a, 0x20, 0x47, 0x49,
@@ -71,7 +73,7 @@ TOITWARE_LOGO ::= #[
   0x00]
 
 main:
-  oled := TwoColorPixelDisplay "ssd1306"
+  oled := get_display
 
   oled.background = BLACK
 

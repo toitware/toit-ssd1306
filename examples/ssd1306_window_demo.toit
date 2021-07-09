@@ -4,15 +4,17 @@
 
 // Demo of 128x64 monochrome display.
 
-import font show *
-import font.matthew_welch.tiny as tiny_4
-import pixel_display show *
-import texture show *
-import two_color show *
 import bitmap show *
+import font.matthew_welch.tiny as tiny_4
+import font show *
+import pixel_display show *
+import pixel_display.texture show *
+import pixel_display.two_color show *
+
+import .get_display
 
 main:
-  oled := TwoColorPixelDisplay "ssd1306"
+  oled := get_display
 
   oled.background = BLACK
 
@@ -29,7 +31,7 @@ animate oled transform:
   sans_context := oled.context --landscape --font=sans --color=WHITE --alignment=TEXT_TEXTURE_ALIGN_CENTER
   boef_x := 50
   loeg_x := 20
-  boef := oled.text sans_context boef_x boef_x "Bøf"
+  boef := oled.text sans_context boef_x boef_x "Beef"
 
   tiny_context := oled.context --landscape --font=tiny --color=WHITE
   symbols := oled.text tiny_context 15 34 "!\"#\$%&/(){}=?+`,;.:-_^~01234567890"
