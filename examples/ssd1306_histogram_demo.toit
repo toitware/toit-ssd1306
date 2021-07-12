@@ -30,18 +30,18 @@ animate oled histogram transform:
 
   lvl := 50
 
-  boef_x := 50
-  loeg_x := 50
+  beef_x := 50
+  onion_x := 50
 
   sans_context := oled.context --landscape --font=sans --color=WHITE
-  boef := oled.text sans_context boef_x 16 "Beef"
-  loeg := oled.text sans_context loeg_x 32 "Onion"
+  beef := oled.text sans_context beef_x 16 "Beef"
+  onion := oled.text sans_context onion_x 32 "Onion"
 
   sans24b_context := sans_context.with --font=sans24b --alignment=TEXT_TEXTURE_ALIGN_RIGHT
   fps := oled.text sans24b_context 126 62 "30.0"
 
-  boef_dir := 3
-  loeg_dir := -3
+  beef_dir := 3
+  onion_dir := -3
   last := Time.monotonic_us
   previous := Time.monotonic_us
   while true:
@@ -54,13 +54,13 @@ animate oled histogram transform:
     fps.text = "$(%.1f 1000000.0 / (time_now - last)) "
     last = time_now
 
-    boef_x += boef_dir
-    loeg_x += loeg_dir
-    if boef_x < 0 or loeg_x < 0:
-      boef_dir = -boef_dir
-      loeg_dir = -loeg_dir
-    boef.move_to boef_x 16
-    loeg.move_to loeg_x 32
+    beef_x += beef_dir
+    onion_x += onion_dir
+    if beef_x < 0 or onion_x < 0:
+      beef_dir = -beef_dir
+      onion_dir = -onion_dir
+    beef.move_to beef_x 16
+    onion.move_to onion_x 32
     oled.draw
 
     next := Time.monotonic_us

@@ -29,9 +29,9 @@ animate oled transform:
   in_window := window.transform
 
   sans_context := oled.context --landscape --font=sans --color=WHITE --alignment=TEXT_TEXTURE_ALIGN_CENTER
-  boef_x := 50
-  loeg_x := 20
-  boef := oled.text sans_context boef_x boef_x "Beef"
+  beef_x := 50
+  onion_x := 20
+  beef := oled.text sans_context beef_x beef_x "Beef"
 
   tiny_context := oled.context --landscape --font=tiny --color=WHITE
   symbols := oled.text tiny_context 15 34 "!\"#\$%&/(){}=?+`,;.:-_^~01234567890"
@@ -39,8 +39,8 @@ animate oled transform:
   lc := TextTexture 15 20 in_window TEXT_TEXTURE_ALIGN_LEFT "abcdefghijklmnopqrstuvwxyz" tiny BLACK
   uc := TextTexture 15 27 in_window TEXT_TEXTURE_ALIGN_LEFT "ABCDEFGHIJKLMNOPQRSTUVWXYZ" tiny BLACK
   count_transform := (transform.translate 20 30).rotate_right
-  boef_dir := 1
-  loeg_dir := -1
+  beef_dir := 1
+  onion_dir := -1
   window.add lc
   window.add uc
   last := Time.monotonic_us
@@ -50,12 +50,12 @@ animate oled transform:
     time_now := Time.monotonic_us
     last = time_now
 
-    boef_x += boef_dir
-    loeg_x += loeg_dir
-    if boef_x < 0 or loeg_x < 0:
-      boef_dir = -boef_dir
-      loeg_dir = -loeg_dir
-    boef.move_to boef_x boef_x
-    lc.move_to loeg_x 20
-    uc.move_to loeg_x 27
+    beef_x += beef_dir
+    onion_x += onion_dir
+    if beef_x < 0 or onion_x < 0:
+      beef_dir = -beef_dir
+      onion_dir = -onion_dir
+    beef.move_to beef_x beef_x
+    lc.move_to onion_x 20
+    uc.move_to onion_x 27
     oled.draw

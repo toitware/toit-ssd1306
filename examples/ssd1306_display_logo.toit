@@ -95,3 +95,4 @@ main:
       logo.move_to i (i / 8)
       logobg.move_to 100 - i ((100 - i) / 8)
       oled.draw
+      sleep --ms=1
