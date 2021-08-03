@@ -1,6 +1,6 @@
-// Copyright (C) 2018 Toitware ApS. All rights reserved.
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file.
+// Copyright (C) 2018 Toitware ApS.
+// Use of this source code is governed by a Zero-Clause BSD license that can
+// be found in the EXAMPLES_LICENSE file.
 
 // Demo of 128x64 monochrome display.
 
