@@ -42,13 +42,18 @@ SSD1306_NOP_ ::= 0xe3
 
 class SSD1306 extends AbstractDriver:
   i2c_ := ?
+  buffer_ := ByteArray WIDTH_ + 1
+  command_buffer_ := ByteArray 2
 
   constructor .i2c_:
     init_
 
-  width -> int: return 128
-  height -> int: return 64
-  flags -> int: return FLAG_2_COLOR | FLAG_PARTIAL_UPDATES
+  static WIDTH_ ::= 128
+  static HEIGHT_ ::= 64
+
+  width/int ::= WIDTH_
+  height/int ::= HEIGHT_
+  flags/int ::= FLAG_2_COLOR | FLAG_PARTIAL_UPDATES
 
   init_:
     command_ SSD1306_DISPLAYOFF_
@@ -79,10 +84,9 @@ class SSD1306 extends AbstractDriver:
     command_ SSD1306_DISPLAYON_
 
   command_ byte:
-    bytes := ByteArray 2
-    bytes[0] = 0
-    bytes[1] = byte
-    i2c_.write bytes
+    command_buffer_[0] = 0
+    command_buffer_[1] = byte
+    i2c_.write command_buffer_
 
   draw_two_color left/int top/int right/int bottom/int pixels/ByteArray -> none:
     command_ SSD1306_COLUMNADDR_
@@ -92,14 +96,16 @@ class SSD1306 extends AbstractDriver:
     command_ top >> 3           // Page start.
     command_ (bottom >> 3) - 1  // Page end.
 
-    width := right - left
+    patch_width := right - left
 
-    buffer := ByteArray width + 1
-    buffer[0] = 0x40
+    line_buffer := buffer_[0..patch_width + 1]
+
+    line_buffer[0] = 0x40
 
     i := 0
-    ((bottom - top) >> 3).repeat:
-      width.repeat: buffer[it + 1] = pixels[i++]
-      i2c_.write buffer: print "error printing data"
+    for y := top; y < bottom; y += 8:
+      line_buffer.replace 1 pixels i i + patch_width
+      i += patch_width
+      i2c_.write line_buffer
 
 SSD1306_ID ::= 0x3c
