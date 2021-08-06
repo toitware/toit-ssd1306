@@ -106,6 +106,6 @@ class SSD1306 extends AbstractDriver:
     for y := top; y < bottom; y += 8:
       line_buffer.replace 1 pixels i i + patch_width
       i += patch_width
-      i2c_.write line_buffer: print "error printing data"
+      i2c_.write line_buffer
 
 SSD1306_ID ::= 0x3c
