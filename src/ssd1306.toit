@@ -2,10 +2,13 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
-// Driver for the SSD1306 i2C OLED display.  This is a 128x64 monochrome
-// display. On the Wemos Lolin board the I2C bus is connected to pin5 (SDA) and
-// pin4 (SCL), and the SSD1306 display is device 0x3c.  See
-// https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf for programming info.
+/**
+Driver for the SSD1306 i2C OLED display.
+This is a 128x64 monochrome
+display. On the Wemos Lolin board the I2C bus is connected to pin5 (SDA) and
+pin4 (SCL), and the SSD1306 display is device 0x3c.  See
+https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf for programming info.
+*/
 
 import binary
 import bitmap show *
@@ -40,6 +43,11 @@ SSD1306_SETCOMPINS_ ::= 0xda
 SSD1306_SETVCOMDETECT_ ::= 0xdb
 SSD1306_NOP_ ::= 0xe3
 
+/**
+Black-and-white driver intended to be used with the Pixel-Display package
+  at https://pkg.toit.io/package/pixel_display&url=github.com%2Ftoitware%2Ftoit-pixel-display&index=latest
+See https://docs.toit.io/language/sdk/display
+*/
 class SSD1306 extends AbstractDriver:
   i2c_ := ?
   buffer_ := ByteArray WIDTH_ + 1
@@ -108,4 +116,5 @@ class SSD1306 extends AbstractDriver:
       i += patch_width
       i2c_.write line_buffer
 
+/// I2C ID of an SSD1306 display.
 SSD1306_ID ::= 0x3c
