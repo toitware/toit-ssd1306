@@ -5,9 +5,9 @@
 /**
 Driver for the SSD1306 i2C OLED display.
 This is a 128x64 monochrome
-display. On the Wemos Lolin board the I2C bus is connected to pin5 (SDA) and
-pin4 (SCL), and the SSD1306 display is device 0x3c.  See
-https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf for programming info.
+  display. On the Wemos Lolin board the I2C bus is connected to pin5 (SDA) and
+  pin4 (SCL), and the SSD1306 display is device 0x3c.  See
+  https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf for programming info.
 */
 
 import binary
