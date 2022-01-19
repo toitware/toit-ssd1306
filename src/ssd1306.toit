@@ -56,7 +56,7 @@ class I2cSSD1306 extends SSD1306:
     super i2c
 
 /// See $I2cSSD1306.
-class SSD1306 extends AbstractSSD1306:
+class SSD1306 extends AbstractSSD1306_:
   i2c_ / i2c.Device
 
   constructor .i2c_:
@@ -78,10 +78,10 @@ Intended to be used with the Pixel-Display package
   at https://pkg.toit.io/package/pixel_display&url=github.com%2Ftoitware%2Ftoit-pixel-display&index=latest
 See https://docs.toit.io/language/sdk/display
 */
-class SpiSSD1306 extends AbstractSSD1306:
+class SpiSSD1306 extends AbstractSSD1306_:
   device_ / spi.Device
 
-  constructor .device_ --reset/spi.Pin?=null:
+  constructor .device_ --reset/gpio.Pin?=null:
     if reset:
       reset.set 0
       sleep --ms=50
@@ -96,7 +96,7 @@ class SpiSSD1306 extends AbstractSSD1306:
   send_data_buffer_ buffer:
     device_.transfer buffer --dc=1
 
-abstract class AbstractSSD1306 extends AbstractDriver:
+abstract class AbstractSSD1306_ extends AbstractDriver:
   buffer_ := ByteArray WIDTH_ + 1
   command_buffers_ := [ByteArray 1, ByteArray 2, ByteArray 3, ByteArray 4]
 
