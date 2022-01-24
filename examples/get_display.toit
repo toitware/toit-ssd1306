@@ -18,6 +18,6 @@ get_display -> PixelDisplay:
   devices := bus.scan
   if not devices.contains SSD1306_ID: throw "No SSD1306 display found"
 
-  driver := SSD1306 (bus.device 0x3c)
+  driver := I2cSSD1306 (bus.device 0x3c)
 
   return TwoColorPixelDisplay driver

@@ -14,8 +14,10 @@ import binary
 import bitmap show *
 import font show *
 import gpio
+import i2c
 import pixel_display.two_color show *
 import pixel_display show *
+import spi
 
 SSD1306_SETMEMORYMODE_ ::= 0x20
 SSD1306_COLUMNADDR_ ::= 0x21
@@ -44,17 +46,62 @@ SSD1306_SETVCOMDETECT_ ::= 0xdb
 SSD1306_NOP_ ::= 0xe3
 
 /**
-Black-and-white driver intended to be used with the Pixel-Display package
+Black-and-white driver for an SSD1306 or SSD1309 connected over I2C.
+Intended to be used with the Pixel-Display package
   at https://pkg.toit.io/package/pixel_display&url=github.com%2Ftoitware%2Ftoit-pixel-display&index=latest
 See https://docs.toit.io/language/sdk/display
 */
-class SSD1306 extends AbstractDriver:
-  i2c_ := ?
-  buffer_ := ByteArray WIDTH_ + 1
-  command_buffer_ := ByteArray 2
+class I2cSSD1306 extends SSD1306:
+  constructor i2c/i2c.Device:
+    super i2c
+
+/**
+Deprecated.
+See $I2cSSD1306.
+*/
+class SSD1306 extends AbstractSSD1306_:
+  i2c_ / i2c.Device
 
   constructor .i2c_:
     init_
+
+  buffer_header_size_: return 1
+
+  send_command_buffer_ buffer:
+    buffer[0] = 0x00
+    i2c_.write buffer
+
+  send_data_buffer_ buffer:
+    buffer[0] = 0x40
+    i2c_.write buffer
+
+/**
+Black-and-white driver for an SSD1306 or SSD1309 connected over SPI.
+Intended to be used with the Pixel-Display package
+  at https://pkg.toit.io/package/pixel_display&url=github.com%2Ftoitware%2Ftoit-pixel-display&index=latest
+See https://docs.toit.io/language/sdk/display
+*/
+class SpiSSD1306 extends AbstractSSD1306_:
+  device_ / spi.Device
+
+  constructor .device_ --reset/gpio.Pin?=null:
+    if reset:
+      reset.set 0
+      sleep --ms=50
+      reset.set 1
+    init_
+
+  buffer_header_size_: return 0
+
+  send_command_buffer_ buffer:
+    device_.transfer buffer --dc=0
+
+  send_data_buffer_ buffer:
+    device_.transfer buffer --dc=1
+
+abstract class AbstractSSD1306_ extends AbstractDriver:
+  buffer_ := ByteArray WIDTH_ + 1
+  command_buffers_ := [ByteArray 1, ByteArray 2, ByteArray 3, ByteArray 4]
 
   static WIDTH_ ::= 128
   static HEIGHT_ ::= 64
@@ -63,58 +110,67 @@ class SSD1306 extends AbstractDriver:
   height/int ::= HEIGHT_
   flags/int ::= FLAG_2_COLOR | FLAG_PARTIAL_UPDATES
 
+  abstract buffer_header_size_ -> int
+  abstract send_command_buffer_ buffer -> none
+  abstract send_data_buffer_ buffer -> none
+
   init_:
     command_ SSD1306_DISPLAYOFF_
-    command_ SSD1306_SETDISPLAYCLOCKDIV_
-    command_ 0x80
-    command_ SSD1306_SETMULTIPLEX_
-    command_ 0x3f
-    command_ SSD1306_SETDISPLAYOFFSET_
-    command_ 0
+    command_ SSD1306_SETDISPLAYCLOCKDIV_ 0x80
+    command_ SSD1306_SETMULTIPLEX_ 0x3f
+    command_ SSD1306_SETDISPLAYOFFSET_ 0
     command_ SSD1306_SETSTARTLINE_0_
-    command_ SSD1306_SETMEMORYMODE_
-    command_ 0
+    command_ SSD1306_SETMEMORYMODE_ 0
     command_ SSD1306_SETREMAPMODE_1_
     command_ SSD1306_COMSCANDEC_
-    command_ SSD1306_SETCOMPINS_
-    command_ 0x12
-    command_ SSD1306_SETCONTRAST_
-    command_ 0xcf
-    command_ SSD1306_SETPRECHARGE_
-    command_ 0xf1
-    command_ SSD1306_SETVCOMDETECT_
-    command_ 0x30
-    command_ SSD1306_CHARGEPUMP_
-    command_ 0x14
+    command_ SSD1306_SETCOMPINS_ 0x12
+    command_ SSD1306_SETCONTRAST_ 0xcf
+    command_ SSD1306_SETPRECHARGE_ 0xf1
+    command_ SSD1306_SETVCOMDETECT_ 0x30
+    command_ SSD1306_CHARGEPUMP_ 0x14
     command_ SSD1306_DEACTIVATE_SCROLL_
     command_ SSD1306_DISPLAYALLON_RESUME_
     command_ SSD1306_INVERSEDISPLAY_
     command_ SSD1306_DISPLAYON_
 
   command_ byte:
-    command_buffer_[0] = 0
-    command_buffer_[1] = byte
-    i2c_.write command_buffer_
+    i := buffer_header_size_
+    buffer := command_buffers_[i]
+    buffer[i] = byte
+    send_command_buffer_ buffer
+
+  command_ byte1 byte2:
+    i := buffer_header_size_
+    buffer := command_buffers_[i + 1]
+    buffer[i] = byte1
+    buffer[i + 1] = byte2
+    send_command_buffer_ buffer
+
+  command_ byte1 byte2 byte3:
+    i := buffer_header_size_
+    buffer := command_buffers_[i + 2]
+    buffer[i] = byte1
+    buffer[i + 1] = byte2
+    buffer[i + 2] = byte3
+    send_command_buffer_ buffer
 
   draw_two_color left/int top/int right/int bottom/int pixels/ByteArray -> none:
     command_ SSD1306_COLUMNADDR_
-    command_ left               // Column start.
-    command_ right - 1          // Column end.
+        left               // Column start.
+        right - 1          // Column end.
     command_ SSD1306_PAGEADDR_
-    command_ top >> 3           // Page start.
-    command_ (bottom >> 3) - 1  // Page end.
+        top >> 3           // Page start.
+        (bottom >> 3) - 1  // Page end.
 
     patch_width := right - left
 
-    line_buffer := buffer_[0..patch_width + 1]
-
-    line_buffer[0] = 0x40
+    line_buffer := buffer_[0..patch_width + buffer_header_size_]
 
     i := 0
     for y := top; y < bottom; y += 8:
-      line_buffer.replace 1 pixels i i + patch_width
+      line_buffer.replace buffer_header_size_ pixels i i + patch_width
       i += patch_width
-      i2c_.write line_buffer
+      send_data_buffer_ line_buffer
 
 /// I2C ID of an SSD1306 display.
 SSD1306_ID ::= 0x3c
