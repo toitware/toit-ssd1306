@@ -55,7 +55,10 @@ class I2cSSD1306 extends SSD1306:
   constructor i2c/i2c.Device:
     super i2c
 
-/// See $I2cSSD1306.
+/**
+Deprecated.
+See $I2cSSD1306.
+*/
 class SSD1306 extends AbstractSSD1306_:
   i2c_ / i2c.Device
 
