@@ -65,9 +65,8 @@ Black-and-white driver for an SSD1306 or SSD1309 connected I2C.
 class I2cSSD1306_ extends SSD1306:
   i2c_ / i2c.Device
 
-  constructor .i2c_:
-    super.from_subclass_
-    init_
+  constructor .i2c_ --reset/gpio.Pin?=null:
+    super.from_subclass_ --reset=reset
 
   buffer_header_size_: return 1
 
@@ -86,12 +85,7 @@ class SpiSSD1306_ extends SSD1306:
   device_ / spi.Device
 
   constructor .device_ --reset/gpio.Pin?=null:
-    super.from_subclass_
-    if reset:
-      reset.set 0
-      sleep --ms=50
-      reset.set 1
-    init_
+    super.from_subclass_ --reset=reset
 
   buffer_header_size_: return 0
 
@@ -115,13 +109,18 @@ abstract class SSD1306 extends AbstractDriver:
   constructor device/i2c.Device:
     return SSD1306.i2c device
 
-  constructor.i2c device/i2c.Device:
-    return I2cSSD1306_ device
+  constructor.i2c device/i2c.Device --reset/gpio.Pin?=null:
+    return I2cSSD1306_ device --reset=reset
 
   constructor.spi device/spi.Device --reset/gpio.Pin?=null:
     return SpiSSD1306_ device --reset=reset
 
-  constructor.from_subclass_:
+  constructor.from_subclass_ --reset/gpio.Pin?:
+    if reset:
+      reset.set 0
+      sleep --ms=50
+      reset.set 1
+    init_
 
   buffer_ := ByteArray WIDTH_ + 1
   command_buffers_ := [ByteArray 1, ByteArray 2, ByteArray 3, ByteArray 4]
