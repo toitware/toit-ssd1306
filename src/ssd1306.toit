@@ -108,6 +108,8 @@ Intended to be used with the Pixel-Display package
 See https://docs.toit.io/language/sdk/display
 */
 abstract class SSD1306 extends AbstractDriver:
+  static I2C_ADDRESS ::= 0x3c
+  static I2C_ADDRESS_ALT ::= 0x3d
 
   /**
   Deprecated. Use the $SSD1306.i2c constructor instead.
@@ -196,4 +198,5 @@ abstract class SSD1306 extends AbstractDriver:
       send_data_buffer_ line_buffer
 
 /// I2C ID of an SSD1306 display.
-SSD1306_ID ::= 0x3c
+/// Deprecated. Use $SSD1306.I2C_ADDRESS instead.
+SSD1306_ID ::= SSD1306.I2C_ADDRESS
