@@ -1,0 +1,7 @@
+prefixes:
+  pixel_display: toit-pixel-display
+packages:
+  toit-pixel-display:
+    url: github.com/toitware/toit-pixel-display
+    version: 1.5.0
+    hash: 359a4a5734b350f032cf81b971e5a065c73f6588
