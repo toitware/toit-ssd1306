@@ -16,8 +16,8 @@ get_display -> PixelDisplay:
     --frequency=800_000
 
   devices := bus.scan
-  if not devices.contains SSD1306.I2C_ADDRESS: throw "No SSD1306 display found"
+  if not devices.contains Ssd1306.I2C_ADDRESS: throw "No SSD1306 display found"
 
-  driver := SSD1306.i2c (bus.device SSD1306.I2C_ADDRESS)
+  driver := Ssd1306.i2c (bus.device Ssd1306.I2C_ADDRESS)
 
   return TwoColorPixelDisplay driver
