@@ -46,23 +46,23 @@ SSD1306_SETVCOMDETECT_ ::= 0xdb
 SSD1306_NOP_ ::= 0xe3
 
 /**
-Deprecated. Use the $SSD1306.i2c constructor.
+Deprecated. Use the $Ssd1306.i2c constructor.
 */
-class I2cSSD1306 extends I2cSSD1306_:
+class I2cSSD1306 extends I2cSsd1306_:
   constructor i2c/i2c.Device:
     super i2c
 
 /**
-Deprecated. Use the $SSD1306.spi constructor.
+Deprecated. Use the $Ssd1306.spi constructor.
 */
-class SpiSSD1306 extends SpiSSD1306_:
+class SpiSSD1306 extends SpiSsd1306_:
   constructor device/spi.Device --reset/gpio.Pin?=null:
     super device --reset=reset
 
 /**
 Black-and-white driver for an SSD1306 or SSD1309 connected I2C.
 */
-class I2cSSD1306_ extends SSD1306:
+class I2cSsd1306_ extends SSD1306:
   i2c_ / i2c.Device
 
   constructor .i2c_ --reset/gpio.Pin?=null:
@@ -81,7 +81,7 @@ class I2cSSD1306_ extends SSD1306:
 /**
 Black-and-white driver for an SSD1306 or SSD1309 connected over SPI.
 */
-class SpiSSD1306_ extends SSD1306:
+class SpiSsd1306_ extends SSD1306:
   device_ / spi.Device
 
   constructor .device_ --reset/gpio.Pin?=null:
@@ -96,12 +96,41 @@ class SpiSSD1306_ extends SSD1306:
     device_.transfer buffer --dc=1
 
 /**
+Deprecated. Use $Ssd1306 instead.
+*/
+abstract class SSD1306 extends Ssd1306:
+  /**
+  Deprecated. Use the $Ssd1306.i2c constructor instead.
+  */
+  constructor device/i2c.Device:
+    return I2cSsd1306_ device --reset=null
+
+  /**
+  Deprecated. Use $Ssd1306.i2c instead.
+  */
+  constructor.i2c device/i2c.Device --reset/gpio.Pin?=null:
+    return I2cSsd1306_ device --reset=reset
+
+  /**
+  Deprecated. Use $Ssd1306.spi instead.
+  */
+  constructor.spi device/spi.Device --reset/gpio.Pin?=null:
+    return SpiSsd1306_ device --reset=reset
+
+  constructor.from_subclass_ --reset/gpio.Pin?:
+    super.from_subclass_ --reset=reset
+
+  abstract buffer_header_size_ -> int
+  abstract send_command_buffer_ buffer -> none
+  abstract send_data_buffer_ buffer -> none
+
+/**
 Black-and-white driver for an SSD1306 or SSD1309 connected over I2C or SPI.
 Intended to be used with the Pixel-Display package
   at https://pkg.toit.io/package/pixel_display&url=github.com%2Ftoitware%2Ftoit-pixel-display&index=latest
 See https://docs.toit.io/language/sdk/display
 */
-abstract class SSD1306 extends AbstractDriver:
+abstract class Ssd1306 extends AbstractDriver:
   static I2C_ADDRESS ::= 0x3c
   static I2C_ADDRESS_ALT ::= 0x3d
 
@@ -109,13 +138,13 @@ abstract class SSD1306 extends AbstractDriver:
   Deprecated. Use the $SSD1306.i2c constructor instead.
   */
   constructor device/i2c.Device:
-    return SSD1306.i2c device
+    return Ssd1306.i2c device
 
   constructor.i2c device/i2c.Device --reset/gpio.Pin?=null:
-    return I2cSSD1306_ device --reset=reset
+    return I2cSsd1306_ device --reset=reset
 
   constructor.spi device/spi.Device --reset/gpio.Pin?=null:
-    return SpiSSD1306_ device --reset=reset
+    return SpiSsd1306_ device --reset=reset
 
   constructor.from_subclass_ --reset/gpio.Pin?:
     if reset:
@@ -197,5 +226,5 @@ abstract class SSD1306 extends AbstractDriver:
       send_data_buffer_ line_buffer
 
 /// I2C ID of an SSD1306 display.
-/// Deprecated. Use $SSD1306.I2C_ADDRESS instead.
-SSD1306_ID ::= SSD1306.I2C_ADDRESS
+/// Deprecated. Use $Ssd1306.I2C_ADDRESS instead.
+SSD1306_ID ::= Ssd1306.I2C_ADDRESS
