@@ -99,6 +99,11 @@ class SpiSsd1306_ extends SSD1306:
 Deprecated. Use $Ssd1306 instead.
 */
 abstract class SSD1306 extends Ssd1306:
+  /** Deprecated. Use $Ssd1306.I2C_ADDRESS instead. */
+  static I2C_ADDRESS ::= Ssd1306.I2C_ADDRESS
+  /** Deprecated. Use $Ssd1306.I2C_ADDRESS_ALT instead. */
+  static I2C_ADDRESS_ALT ::= Ssd1306.I2C_ADDRESS_ALT
+
   /**
   Deprecated. Use the $Ssd1306.i2c constructor instead.
   */
