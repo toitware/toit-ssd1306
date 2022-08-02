@@ -1,4 +1,5 @@
 prefixes:
+  font_tiny: pkg-font-tiny
   pixel_display: toit-pixel-display
   ssd1306: ..
 packages:
@@ -6,6 +7,10 @@ packages:
     path: ..
     prefixes:
       pixel_display: toit-pixel-display
+  pkg-font-tiny:
+    url: github.com/toitlang/pkg-font-tiny
+    version: 0.1.0
+    hash: 1506cad47ee738f8a9145885abb5fa0be918b2b5
   toit-pixel-display:
     url: github.com/toitware/toit-pixel-display
     version: 1.6.0

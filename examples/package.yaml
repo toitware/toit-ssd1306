@@ -1,4 +1,7 @@
 dependencies:
+  font_tiny:
+    url: github.com/toitlang/pkg-font-tiny
+    version: ^0.1.0
   pixel_display:
     url: github.com/toitware/toit-pixel-display
     version: ^1.6.0
