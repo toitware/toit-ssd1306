@@ -5,7 +5,7 @@
 // Demo of 128x64 monochrome display.
 
 import bitmap show *
-import font.matthew_welch.tiny as tiny_4
+import font_tiny.tiny as tiny_4
 import font show *
 import pixel_display show *
 import pixel_display.texture show *
