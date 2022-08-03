@@ -6,7 +6,7 @@
 
 import bitmap show *
 import font show *
-import font.x11_100dpi.sans.sans_24_bold as sans_24_bold
+import font_x11_adobe.sans_24_bold
 import pixel_display.histogram show *
 import pixel_display show *
 import pixel_display.texture show *
