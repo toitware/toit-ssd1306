@@ -1,5 +1,6 @@
 prefixes:
   font_tiny: pkg-font-tiny
+  font_x11_adobe: pkg-font-x11-adobe
   pixel_display: toit-pixel-display
   ssd1306: ..
 packages:
@@ -11,6 +12,10 @@ packages:
     url: github.com/toitlang/pkg-font-tiny
     version: 0.1.0
     hash: 1506cad47ee738f8a9145885abb5fa0be918b2b5
+  pkg-font-x11-adobe:
+    url: github.com/toitlang/pkg-font-x11-adobe
+    version: 0.1.0
+    hash: f844400722165252148f087cdf189abab0a47f3d
   toit-pixel-display:
     url: github.com/toitware/toit-pixel-display
     version: 1.6.0
