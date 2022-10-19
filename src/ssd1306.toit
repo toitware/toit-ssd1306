@@ -140,7 +140,7 @@ abstract class Ssd1306 extends AbstractDriver:
   static I2C_ADDRESS_ALT ::= 0x3d
 
   /**
-  Deprecated. Use the $SSD1306.i2c constructor instead.
+  Deprecated. Use the $Ssd1306.i2c constructor instead.
   */
   constructor device/i2c.Device:
     return Ssd1306.i2c device
