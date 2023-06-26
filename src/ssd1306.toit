@@ -50,14 +50,14 @@ Deprecated. Use the $Ssd1306.i2c constructor.
 */
 class I2cSSD1306 extends I2cSsd1306_:
   constructor i2c/i2c.Device:
-    super i2c
+    super i2c --height=64 --no-flip --inverse --layout=Ssd1306.LAYOUT_ALTERNATED
 
 /**
 Deprecated. Use the $Ssd1306.spi constructor.
 */
 class SpiSSD1306 extends SpiSsd1306_:
   constructor device/spi.Device --reset/gpio.Pin?=null:
-    super device --reset=reset
+    super device --reset=reset --height=64 --no-flip --inverse --layout=Ssd1306.LAYOUT_ALTERNATED
 
 /**
 Black-and-white driver for an SSD1306 or SSD1309 connected I2C.
@@ -65,8 +65,8 @@ Black-and-white driver for an SSD1306 or SSD1309 connected I2C.
 class I2cSsd1306_ extends SSD1306:
   i2c_ / i2c.Device
 
-  constructor .i2c_ --reset/gpio.Pin?=null:
-    super.from_subclass_ --reset=reset
+  constructor .i2c_ --reset/gpio.Pin?=null --height/int --flip/bool --inverse/bool --layout/int:
+    super.from_subclass_ --reset=reset --height=height --flip=flip --inverse=inverse --layout=layout
 
   buffer_header_size_: return 1
 
@@ -84,8 +84,8 @@ Black-and-white driver for an SSD1306 or SSD1309 connected over SPI.
 class SpiSsd1306_ extends SSD1306:
   device_ / spi.Device
 
-  constructor .device_ --reset/gpio.Pin?=null:
-    super.from_subclass_ --reset=reset
+  constructor .device_ --reset/gpio.Pin?=null --height/int --flip/bool --inverse/bool --layout/int:
+    super.from_subclass_ --reset=reset --height=height --flip=flip --inverse=inverse --layout=layout
 
   buffer_header_size_: return 0
 
@@ -108,22 +108,22 @@ abstract class SSD1306 extends Ssd1306:
   Deprecated. Use the $Ssd1306.i2c constructor instead.
   */
   constructor device/i2c.Device:
-    return I2cSsd1306_ device --reset=null
+    return I2cSsd1306_ device --reset=null --height=64 --no-flip --inverse --layout=Ssd1306.LAYOUT_ALTERNATED
 
   /**
   Deprecated. Use $Ssd1306.i2c instead.
   */
   constructor.i2c device/i2c.Device --reset/gpio.Pin?=null:
-    return I2cSsd1306_ device --reset=reset
+    return I2cSsd1306_ device --reset=reset --height=64 --no-flip --inverse --layout=Ssd1306.LAYOUT_ALTERNATED
 
   /**
   Deprecated. Use $Ssd1306.spi instead.
   */
   constructor.spi device/spi.Device --reset/gpio.Pin?=null:
-    return SpiSsd1306_ device --reset=reset
+    return SpiSsd1306_ device --reset=reset --height=64 --no-flip --inverse --layout=Ssd1306.LAYOUT_ALTERNATED
 
-  constructor.from_subclass_ --reset/gpio.Pin?:
-    super.from_subclass_ --reset=reset
+  constructor.from_subclass_ --reset/gpio.Pin? --height/int --flip/bool --inverse/bool --layout/int:
+    super.from_subclass_ --reset=reset --height=height --flip=flip --inverse=inverse --layout=layout
 
   abstract buffer_header_size_ -> int
   abstract send_command_buffer_ buffer -> none
@@ -140,23 +140,108 @@ abstract class Ssd1306 extends AbstractDriver:
   static I2C_ADDRESS_ALT ::= 0x3d
 
   /**
+  Sequential layout.
+
+  The lines of the display are laid out sequentially.
+  Hardware line "COM0" is connected to row 0 of the display.
+  Hardware line "COM32" is connected to row 32 of the display.
+  */
+  static LAYOUT_SEQUENTIAL ::= 0
+  /**
+  Sequential switched layout.
+
+  A common layout for 32-line displays.
+
+  The lines of the display are laid out sequentially.
+  Hardware line "COM0" is connected to row 32 of the display.
+  Hardware line "COM32" is connected to row 0 of the display.
+
+  Compared to $LAYOUT_SEQUENTIAL, lines 0-31 and 32-63 are swapped.
+  */
+  static LAYOUT_SEQUENTIAL_SWITCHED ::= 2
+
+  /**
+  Alternated layout.
+
+  A common layout for 64-line displays.
+
+  The lines of the display are laid out interleaved.
+  Hardware line "COM0" is connected to row 0 of the display, "COM1" to row 2, ...
+  Hardware line "COM32" is connected to row 1 of the display, "COM33" to row 3, ...
+  */
+  static LAYOUT_ALTERNATED ::= 1
+
+  /**
+  Alternated switched layout.
+
+  The lines of the display are laid out interleaved.
+  Hardware line "COM0" is connected to row 1 of the display, "COM1" to row 3, ...
+  Hardware line "COM32" is connected to row 0 of the display, "COM33" to row 2, ...
+  */
+  static LAYOUT_ALTERNATED_SWITCHED ::= 3
+
+  /**
   Deprecated. Use the $Ssd1306.i2c constructor instead.
   */
   constructor device/i2c.Device:
     return Ssd1306.i2c device
 
-  constructor.i2c device/i2c.Device --reset/gpio.Pin?=null:
-    return I2cSsd1306_ device --reset=reset
+  /**
+  Constructs a driver for an SSD1306 or SSD1309 connected over I2C.
 
-  constructor.spi device/spi.Device --reset/gpio.Pin?=null:
-    return SpiSsd1306_ device --reset=reset
+  The $reset pin is optional. If provided, it is used to reset the display.
+  The $height parameter is the height of the display in pixels, and must be
+    either 32 or 64.
+  The $flip parameter controls whether the display is flipped vertically.
+  The $inverse parameter controls whether the display is inverted. That is,
+    whether a pixel value of 0 means "on" or "off".
+  The $layout parameter controls how the SSD1360 chip is physically connected
+    to the rows of the display. Must be one of
+    $LAYOUT_SEQUENTIAL, $LAYOUT_SEQUENTIAL_SWITCHED, $LAYOUT_ALTERNATED, or
+    $LAYOUT_ALTERNATED_SWITCHED.
 
-  constructor.from_subclass_ --reset/gpio.Pin?:
+  It is safe to use the wrong $flip, $inverse and $layout parameters. The
+    display will still work, but the image will be upside-down, inverted, or
+    scrambled. If the display doesn't show the correct image, try changing
+    these parameters. Note that rotations can be fixed by picking a different
+    initial transform on the PixelDisplay.
+  */
+  constructor.i2c device/i2c.Device
+      --reset/gpio.Pin?=null
+      --height/int=64
+      --flip/bool=false
+      --inverse/bool=false
+      --layout/int=(height == 32 ? LAYOUT_SEQUENTIAL_SWITCHED : LAYOUT_ALTERNATED):
+    return I2cSsd1306_ device --reset=reset --height=height --flip=flip --inverse=inverse --layout=layout
+
+  /**
+  Variant of $Ssd1306.i2c that takes an SPI device instead of an I2C device.
+  */
+  constructor.spi device/spi.Device
+      --reset/gpio.Pin?=null
+      --height/int=64
+      --flip/bool=false
+      --inverse/bool=false
+      --layout/int=(height == 32 ? LAYOUT_SEQUENTIAL_SWITCHED : LAYOUT_ALTERNATED):
+    return SpiSsd1306_ device --reset=reset --height=height --flip=flip --inverse=inverse --layout=layout
+
+  constructor.from_subclass_
+      --reset/gpio.Pin?
+      --height/int
+      --flip/bool
+      --inverse/bool
+      --layout = (height == 32 ? LAYOUT_SEQUENTIAL_SWITCHED : LAYOUT_ALTERNATED):
     if reset:
       reset.set 0
       sleep --ms=50
       reset.set 1
-    init_
+    if height != 32 and height != 64:
+      throw "height must be 32 or 64"
+    if layout != LAYOUT_SEQUENTIAL and layout != LAYOUT_SEQUENTIAL_SWITCHED
+        and layout != LAYOUT_ALTERNATED and layout != LAYOUT_ALTERNATED_SWITCHED:
+      throw "layout must be one of LAYOUT_SEQUENTIAL, LAYOUT_SEQUENTIAL_SWITCHED, LAYOUT_ALTERNATED, LAYOUT_ALTERNATED_SWITCHED"
+    this.height = height
+    init_ --flip=flip --inverse=inverse --layout=layout
 
   buffer_ := ByteArray WIDTH_ + 1
   command_buffers_ := [ByteArray 1, ByteArray 2, ByteArray 3, ByteArray 4]
@@ -165,14 +250,14 @@ abstract class Ssd1306 extends AbstractDriver:
   static HEIGHT_ ::= 64
 
   width/int ::= WIDTH_
-  height/int ::= HEIGHT_
+  height/int ::= ?
   flags/int ::= FLAG_2_COLOR | FLAG_PARTIAL_UPDATES
 
   abstract buffer_header_size_ -> int
   abstract send_command_buffer_ buffer -> none
   abstract send_data_buffer_ buffer -> none
 
-  init_:
+  init_ --flip/bool --inverse/bool --layout/int:
     command_ SSD1306_DISPLAYOFF_
     command_ SSD1306_SETDISPLAYCLOCKDIV_ 0x80
     command_ SSD1306_SETMULTIPLEX_ 0x3f
@@ -180,15 +265,24 @@ abstract class Ssd1306 extends AbstractDriver:
     command_ SSD1306_SETSTARTLINE_0_
     command_ SSD1306_SETMEMORYMODE_ 0
     command_ SSD1306_SETREMAPMODE_1_
-    command_ SSD1306_COMSCANDEC_
-    command_ SSD1306_SETCOMPINS_ 0x12
+    if flip:
+      command_ SSD1306_COMSCANINC_
+    else:
+      command_ SSD1306_COMSCANDEC_
+    command_ SSD1306_SETCOMPINS_ ((layout << 4) | 0x02)
     command_ SSD1306_SETCONTRAST_ 0xcf
     command_ SSD1306_SETPRECHARGE_ 0xf1
     command_ SSD1306_SETVCOMDETECT_ 0x30
     command_ SSD1306_CHARGEPUMP_ 0x14
     command_ SSD1306_DEACTIVATE_SCROLL_
     command_ SSD1306_DISPLAYALLON_RESUME_
-    command_ SSD1306_INVERSEDISPLAY_
+    if inverse:
+      // This driver inverts the meaning of "inverse".
+      // Typically displays are oled where the inverse mode is
+      // more common.
+      command_ SSD1306_NORMALDISPLAY_
+    else:
+      command_ SSD1306_INVERSEDISPLAY_
     command_ SSD1306_DISPLAYON_
 
   command_ byte:
