@@ -203,7 +203,8 @@ abstract class Ssd1306 extends AbstractDriver:
   It is safe to use the wrong $flip, $inverse and $layout parameters. The
     display will still work, but the image will be upside-down, inverted, or
     scrambled. If the display doesn't show the correct image, try changing
-    these parameters.
+    these parameters. Note that rotations can be fixed by picking a different
+    initial transform on the PixelDisplay.
   */
   constructor.i2c device/i2c.Device
       --reset/gpio.Pin?=null
