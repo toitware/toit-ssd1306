@@ -22,7 +22,7 @@ get_display -> PixelDisplay:
   // For example, smaller displays might need '--height=32'.
   // If the display is upside down, try '--flip'.
   // If black and white are swapped, try '--inverse'.
-  // If the display looks weird, play with the '--display' option.
+  // If the display looks weird, play with the '--layout' option.
   driver := Ssd1306.i2c (bus.device Ssd1306.I2C_ADDRESS)
 
   return TwoColorPixelDisplay driver
