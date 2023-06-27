@@ -8,8 +8,8 @@ import ssd1306 show *
 import pixel_display show *
 
 get_display -> PixelDisplay:
-  scl := gpio.Pin 4
-  sda := gpio.Pin 5
+  sda := gpio.Pin 4
+  scl := gpio.Pin 5
   bus := i2c.Bus
     --sda=sda
     --scl=scl
