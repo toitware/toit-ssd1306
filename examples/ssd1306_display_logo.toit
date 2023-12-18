@@ -3,16 +3,16 @@
 // be found in the EXAMPLES_LICENSE file.
 
 import font show *
-import pixel_display show *
-import pixel_display.png show *
-import pixel_display.two_color show BLACK WHITE
+import pixel-display show *
+import pixel-display.png show *
+import pixel-display.two-color show BLACK WHITE
 
-import .get_display
+import .get-display
 
 // Uncompressed PNG data created with pngunzip and xxxd.
 // This is a 105x64 image with 1-bit color depth.
 // The log is black, and the rest is transparent.
-TOITWARE_LOGO ::= #[
+TOITWARE-LOGO ::= #[
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
     0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x69, 0x00, 0x00, 0x00, 0x40,
     0x01, 0x03, 0x00, 0x00, 0x00, 0x23, 0xef, 0xcb, 0x87, 0x00, 0x00, 0x00,
@@ -105,14 +105,14 @@ TOITWARE_LOGO ::= #[
 ]
 
 main:
-  oled/PixelDisplay := get_display
+  oled/PixelDisplay := get-display
 
   oled.add
       Div --background=BLACK --x=0 --y=0 --w=128 --h=64 [
-          Png --id="logobg" --x=0 --y=0 --png-file=TOITWARE_LOGO,
+          Png --id="logobg" --x=0 --y=0 --png-file=TOITWARE-LOGO,
           Div.clipping --x=8 --y=8 --w=112 --h=48 --border=(RoundedCornerBorder --radius=17) --background=BLACK [
               Div.clipping --x=2 --y=2 --w=110 --h=44 --border=(RoundedCornerBorder --radius=15) --background=WHITE [
-                  Png --id="logo" --x=1 --y=0 --png-file=TOITWARE_LOGO,
+                  Png --id="logo" --x=1 --y=0 --png-file=TOITWARE-LOGO,
               ],
           ],
       ]
@@ -123,7 +123,7 @@ main:
   while true:
     200.repeat:
       i := it < 100 ? it : 200 - it
-      logo.move_to i (i / 8)
-      logobg.move_to 100 - i ((100 - i) / 8)
+      logo.move-to i (i / 8)
+      logobg.move-to 100 - i ((100 - i) / 8)
       oled.draw
       sleep --ms=1
