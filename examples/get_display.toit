@@ -25,4 +25,4 @@ get_display -> PixelDisplay:
   // If the display looks weird, play with the '--layout' option.
   driver := Ssd1306.i2c (bus.device Ssd1306.I2C_ADDRESS)
 
-  return TwoColorPixelDisplay driver
+  return PixelDisplay.two_color driver
