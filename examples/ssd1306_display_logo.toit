@@ -105,7 +105,7 @@ TOITWARE_LOGO ::= #[
 ]
 
 main:
-  oled := get_display
+  oled/PixelDisplay := get_display
 
   oled.add
       Div --background=BLACK --x=0 --y=0 --w=128 --h=64 [

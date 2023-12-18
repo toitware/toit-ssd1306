@@ -12,11 +12,11 @@ import pixel_display.two_color show WHITE BLACK
 import .get_display
 
 main:
-  oled := get_display
+  oled/PixelDisplay := get_display
 
   animate oled
 
-animate oled:
+animate oled/PixelDisplay -> none:
   window-style := Style
       --background=WHITE
       --border = RoundedCornerBorder --radius=10
