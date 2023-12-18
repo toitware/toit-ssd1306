@@ -1,7 +1,16 @@
+sdk: ^2.0.0-alpha.121
 prefixes:
   pixel_display: toit-pixel-display
 packages:
   toit-pixel-display:
     url: github.com/toitware/toit-pixel-display
-    version: 1.6.0
-    hash: 39de82f680e27961e39ca24ba94520f21759370c
+    name: pixel_display
+    version: 2.1.0
+    hash: 9319730307fb4c3d73a2c702e14b16a1b1cc3915
+    prefixes:
+      png-tools: toit-png-tools
+  toit-png-tools:
+    url: github.com/toitware/toit-png-tools
+    name: png-tools
+    version: 1.0.0
+    hash: ee472ac9d4333a138206f9d3a817d3c5432d6f87

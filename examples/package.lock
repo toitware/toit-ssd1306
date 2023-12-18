@@ -1,3 +1,4 @@
+sdk: ^2.0.0-alpha.121
 prefixes:
   font_tiny: pkg-font-tiny
   font_x11_adobe: pkg-font-x11-adobe
@@ -10,13 +11,23 @@ packages:
       pixel_display: toit-pixel-display
   pkg-font-tiny:
     url: github.com/toitlang/pkg-font-tiny
+    name: font_tiny
     version: 0.1.0
     hash: 1506cad47ee738f8a9145885abb5fa0be918b2b5
   pkg-font-x11-adobe:
     url: github.com/toitlang/pkg-font-x11-adobe
+    name: font_x11_adobe
     version: 0.1.0
     hash: f844400722165252148f087cdf189abab0a47f3d
   toit-pixel-display:
     url: github.com/toitware/toit-pixel-display
-    version: 1.6.0
-    hash: 39de82f680e27961e39ca24ba94520f21759370c
+    name: pixel_display
+    version: 2.1.0
+    hash: 9319730307fb4c3d73a2c702e14b16a1b1cc3915
+    prefixes:
+      png-tools: toit-png-tools
+  toit-png-tools:
+    url: github.com/toitware/toit-png-tools
+    name: png-tools
+    version: 1.0.0
+    hash: ee472ac9d4333a138206f9d3a817d3c5432d6f87
