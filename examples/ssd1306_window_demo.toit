@@ -4,15 +4,15 @@
 
 // Demo of 128x64 monochrome display.
 
-import font_tiny.tiny as tiny_4
+import font-tiny.tiny as tiny-4
 import font show Font
-import pixel_display show *
-import pixel_display.two_color show WHITE BLACK
+import pixel-display show *
+import pixel-display.two-color show WHITE BLACK
 
-import .get_display
+import .get-display
 
 main:
-  oled/PixelDisplay := get_display
+  oled/PixelDisplay := get-display
 
   animate oled
 
@@ -21,14 +21,14 @@ animate oled/PixelDisplay -> none:
       --background=WHITE
       --border = RoundedCornerBorder --radius=10
   sans := Style --color=WHITE --font=(Font.get "sans10") {
-      "alignment": ALIGN_CENTER
+      "alignment": ALIGN-CENTER
   }
-  tiny := Style --color=BLACK --font=(Font [tiny_4.ASCII])
+  tiny := Style --color=BLACK --font=(Font [tiny-4.ASCII])
 
-  beef_x := 50
-  onion_x := 20
-  beef_dir := 1
-  onion_dir := -1
+  beef-x := 50
+  onion-x := 20
+  beef-dir := 1
+  onion-dir := -1
 
   oled.add
       Div --x=0 --y=0 --w=128 --h=64 --background=BLACK [
@@ -44,18 +44,18 @@ animate oled/PixelDisplay -> none:
   uc/Element := oled.get-element-by-id "uc"
   beef/Element := oled.get-element-by-id "beef"
 
-  last := Time.monotonic_us
+  last := Time.monotonic-us
   while true:
     sleep --ms=50
-    time_now := Time.monotonic_us
-    last = time_now
+    time-now := Time.monotonic-us
+    last = time-now
 
-    beef_x += beef_dir
-    onion_x += onion_dir
-    if beef_x < 0 or onion_x < 0:
-      beef_dir = -beef_dir
-      onion_dir = -onion_dir
-    beef.move_to beef_x beef_x
-    lc.move_to onion_x 20
-    uc.move_to onion_x 27
+    beef-x += beef-dir
+    onion-x += onion-dir
+    if beef-x < 0 or onion-x < 0:
+      beef-dir = -beef-dir
+      onion-dir = -onion-dir
+    beef.move-to beef-x beef-x
+    lc.move-to onion-x 20
+    uc.move-to onion-x 27
     oled.draw
