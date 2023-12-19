@@ -8,12 +8,20 @@ import ssd1306 show *
 import pixel-display show *
 
 get-display -> PixelDisplay:
-  sda := gpio.Pin 4
-  scl := gpio.Pin 5
+  sda := gpio.Pin 17
+  scl := gpio.Pin 18
+  reset := null  // or for example gpio.Pin 21 --output
   bus := i2c.Bus
     --sda=sda
     --scl=scl
     --frequency=800_000
+
+  if reset:
+    // If the reset line is floating we have to reset now before we scan.
+    reset.set 0
+    sleep --ms=50
+    reset.set 1
+    sleep --ms=50
 
   devices := bus.scan
   if not devices.contains Ssd1306.I2C-ADDRESS: throw "No SSD1306 display found"
@@ -25,4 +33,4 @@ get-display -> PixelDisplay:
   // If the display looks weird, play with the '--layout' option.
   driver := Ssd1306.i2c (bus.device Ssd1306.I2C-ADDRESS)
 
-  return PixelDisplay.two-color driver
+  return PixelDisplay.two-color --inverted driver
