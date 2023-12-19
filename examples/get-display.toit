@@ -18,8 +18,6 @@ get-display -> PixelDisplay:
 
   if reset:
     // If the reset line is floating we have to reset now before we scan.
-    reset.set 0
-    sleep --ms=50
     reset.set 1
     sleep --ms=50
 
