@@ -32,11 +32,11 @@ animate oled/PixelDisplay -> none:
 
   oled.add
       Div --x=0 --y=0 --w=128 --h=64 --background=BLACK [
-          Label --x=beef-x --y=beef-x --label="Beef" --id="beef" --style=sans,
-          Label --x=15 --y=34 --label="!\"#\$%&/(){}=?+`,;.:-_^~01234567890" --style=sans,
+          Label --x=beef-x --y=beef-x --text="Beef" --id="beef" --style=sans,
+          Label --x=15 --y=34 --text="!\"#\$%&/(){}=?+`,;.:-_^~01234567890" --style=sans,
           Div --x=20 --y=10 --w=100 --h=35 --style=window-style [
-              Label --x=15 --y=20 --label="abcdefghijklmnopqrstuvwxyz" --style=tiny --id="lc",
-              Label --x=15 --y=27 --label="ABCDEFGHIJKLMNOPQRSTUVWXYZ" --style=tiny --id="uc",
+              Label --x=15 --y=20 --text="abcdefghijklmnopqrstuvwxyz" --style=tiny --id="lc",
+              Label --x=15 --y=27 --text="ABCDEFGHIJKLMNOPQRSTUVWXYZ" --style=tiny --id="uc",
           ],
       ]
 
