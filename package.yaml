@@ -1,5 +1,5 @@
 name: ssd1306
-description: Driver for 1-bit OLED displays
+description: Driver for 1-bit OLED displays.
 environment:
   sdk: ^2.0.0-alpha.121
 dependencies:
