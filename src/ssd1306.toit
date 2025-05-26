@@ -66,7 +66,12 @@ class I2cSsd1306_ extends SSD1306:
   i2c_ / i2c.Device
 
   constructor .i2c_ --reset/gpio.Pin?=null --height/int --flip/bool --inverse/bool --layout/int:
-    super.from-subclass_ --reset=reset --height=height --flip=flip --inverse=inverse --layout=layout
+    super.from-subclass_  // @no-warn
+        --reset=reset
+        --height=height
+        --flip=flip
+        --inverse=inverse
+        --layout=layout
 
   buffer-header-size_: return 1
 
@@ -85,7 +90,12 @@ class SpiSsd1306_ extends SSD1306:
   device_ / spi.Device
 
   constructor .device_ --reset/gpio.Pin?=null --height/int --flip/bool --inverse/bool --layout/int:
-    super.from-subclass_ --reset=reset --height=height --flip=flip --inverse=inverse --layout=layout
+    super.from-subclass_  // @no-warn
+        --reset=reset
+        --height=height
+        --flip=flip
+        --inverse=inverse
+        --layout=layout
 
   buffer-header-size_: return 0
 
