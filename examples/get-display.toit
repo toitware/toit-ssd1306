@@ -2,15 +2,14 @@
 // Use of this source code is governed by a Zero-Clause BSD license that can
 // be found in the EXAMPLES_LICENSE file.
 
-import gpio
 import i2c
 import ssd1306 show *
 import pixel-display show *
 
 get-display -> PixelDisplay:
-  sda := gpio.Pin 17
-  scl := gpio.Pin 18
-  reset := null  // or for example gpio.Pin 21 --output
+  sda := 17
+  scl := 18
+  reset := null  // or a GPIO number like 21
   bus := i2c.Bus
     --sda=sda
     --scl=scl
