@@ -56,7 +56,12 @@ class I2cSSD1306 extends I2cSsd1306_:
 Deprecated. Use the $Ssd1306.spi constructor.
 */
 class SpiSSD1306 extends SpiSsd1306_:
-  constructor device/spi.Device --reset/gpio.Pin?=null:
+  /**
+  Passing a $gpio.Pin as $reset is deprecated; provide the integer GPIO number instead.
+  */
+  // __TYPE-MIGRATION__ reset: gpio.Pin. Deprecated. Provide an integer instead.
+  // __TYPE-MIGRATION__ reset: int?
+  constructor device/spi.Device --reset/any=null:
     super device --reset=reset --height=64 --no-flip --inverse --layout=Ssd1306.LAYOUT-ALTERNATED
 
 /**
@@ -65,7 +70,7 @@ Black-and-white driver for an SSD1306 or SSD1309 connected I2C.
 class I2cSsd1306_ extends SSD1306:
   i2c_ / i2c.Device
 
-  constructor .i2c_ --reset/gpio.Pin?=null --height/int --flip/bool --inverse/bool --layout/int:
+  constructor .i2c_ --reset/any=null --height/int --flip/bool --inverse/bool --layout/int:
     super.from-subclass_  // @no-warn
         --reset=reset
         --height=height
@@ -89,7 +94,7 @@ Black-and-white driver for an SSD1306 or SSD1309 connected over SPI.
 class SpiSsd1306_ extends SSD1306:
   device_ / spi.Device
 
-  constructor .device_ --reset/gpio.Pin?=null --height/int --flip/bool --inverse/bool --layout/int:
+  constructor .device_ --reset/any=null --height/int --flip/bool --inverse/bool --layout/int:
     super.from-subclass_  // @no-warn
         --reset=reset
         --height=height
@@ -122,17 +127,25 @@ abstract class SSD1306 extends Ssd1306:
 
   /**
   Deprecated. Use $Ssd1306.i2c instead.
+
+  Passing a $gpio.Pin as $reset is deprecated; provide the integer GPIO number instead.
   */
-  constructor.i2c device/i2c.Device --reset/gpio.Pin?=null:
+  // __TYPE-MIGRATION__ reset: gpio.Pin. Deprecated. Provide an integer instead.
+  // __TYPE-MIGRATION__ reset: int?
+  constructor.i2c device/i2c.Device --reset/any=null:
     return I2cSsd1306_ device --reset=reset --height=64 --no-flip --inverse --layout=Ssd1306.LAYOUT-ALTERNATED
 
   /**
   Deprecated. Use $Ssd1306.spi instead.
+
+  Passing a $gpio.Pin as $reset is deprecated; provide the integer GPIO number instead.
   */
-  constructor.spi device/spi.Device --reset/gpio.Pin?=null:
+  // __TYPE-MIGRATION__ reset: gpio.Pin. Deprecated. Provide an integer instead.
+  // __TYPE-MIGRATION__ reset: int?
+  constructor.spi device/spi.Device --reset/any=null:
     return SpiSsd1306_ device --reset=reset --height=64 --no-flip --inverse --layout=Ssd1306.LAYOUT-ALTERNATED
 
-  constructor.from-subclass_ --reset/gpio.Pin? --height/int --flip/bool --inverse/bool --layout/int:
+  constructor.from-subclass_ --reset/any --height/int --flip/bool --inverse/bool --layout/int:
     super.from-subclass_ --reset=reset --height=height --flip=flip --inverse=inverse --layout=layout
 
   abstract buffer-header-size_ -> int
@@ -215,9 +228,13 @@ abstract class Ssd1306 extends AbstractDriver:
     scrambled. If the display doesn't show the correct image, try changing
     these parameters. Note that rotations can be fixed by picking a different
     initial transform on the PixelDisplay.
+
+  Passing a $gpio.Pin as $reset is deprecated; provide the integer GPIO number instead.
   */
+  // __TYPE-MIGRATION__ reset: gpio.Pin. Deprecated. Provide an integer instead.
+  // __TYPE-MIGRATION__ reset: int?
   constructor.i2c device/i2c.Device
-      --reset/gpio.Pin?=null
+      --reset/any=null
       --height/int=64
       --flip/bool=false
       --inverse/bool=false
@@ -226,25 +243,38 @@ abstract class Ssd1306 extends AbstractDriver:
 
   /**
   Variant of $Ssd1306.i2c that takes an SPI device instead of an I2C device.
+
+  Passing a $gpio.Pin as $reset is deprecated; provide the integer GPIO number instead.
   */
+  // __TYPE-MIGRATION__ reset: gpio.Pin. Deprecated. Provide an integer instead.
+  // __TYPE-MIGRATION__ reset: int?
   constructor.spi device/spi.Device
-      --reset/gpio.Pin?=null
+      --reset/any=null
       --height/int=64
       --flip/bool=false
       --inverse/bool=false
       --layout/int=(height == 32 ? LAYOUT-SEQUENTIAL-SWITCHED : LAYOUT-ALTERNATED):
     return SpiSsd1306_ device --reset=reset --height=height --flip=flip --inverse=inverse --layout=layout
 
+  // GPIO pin the driver created itself (from an integer argument) and must
+  // therefore close again. Null when no reset pin was given, or when the caller
+  // passed a (deprecated) gpio.Pin.
+  reset-pin_/gpio.Pin? := null
+
   constructor.from-subclass_
-      --reset/gpio.Pin?
+      --reset/any
       --height/int
       --flip/bool
       --inverse/bool
       --layout = (height == 32 ? LAYOUT-SEQUENTIAL-SWITCHED : LAYOUT-ALTERNATED):
-    if reset:
-      reset.set 0
+    r/gpio.Pin? := reset == null
+        ? null
+        : (reset is int ? (gpio.Pin reset --output) : (reset as gpio.Pin))
+    if r:
+      if reset is int: reset-pin_ = r
+      r.set 0
       sleep --ms=50
-      reset.set 1
+      r.set 1
     if height != 32 and height != 64:
       throw "height must be 32 or 64"
     if layout != LAYOUT-SEQUENTIAL and layout != LAYOUT-SEQUENTIAL-SWITCHED
@@ -315,6 +345,12 @@ abstract class Ssd1306 extends AbstractDriver:
     buffer[i + 1] = byte2
     buffer[i + 2] = byte3
     send-command-buffer_ buffer
+
+  close -> none:
+    if reset-pin_:
+      reset-pin_.close
+      reset-pin_ = null
+    super
 
   draw-two-color left/int top/int right/int bottom/int pixels/ByteArray -> none:
     command_ SSD1306-COLUMNADDR_
